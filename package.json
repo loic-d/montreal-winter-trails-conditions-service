@@ -1,0 +1,33 @@
+{
+  "name": "montreal-winter-trails-condition-service",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon src/index.js --exec babel-node",
+    "build": "babel src -d dist",
+    "serve": "node dist/index.js",
+    "test": "mocha --compilers js:babel-register"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/loic-d/montreal-winter-trails-conditions-service.git"
+  },
+  "author": "Loic DE LAUBIER",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/loic-d/montreal-winter-trails-conditions-service/issues"
+  },
+  "homepage": "https://github.com/loic-d/montreal-winter-trails-conditions-service#readme",
+  "dependencies": {
+    "yaas.js": "^0.1.8"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.14.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-stage-2": "^6.13.0",
+    "babel-register": "^6.14.0",
+    "mocha": "^3.0.2",
+    "nodemon": "^1.10.2"
+  }
+}
