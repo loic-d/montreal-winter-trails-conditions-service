@@ -15,7 +15,8 @@ The idea behind this service is to create a mobile application for Montrealers w
 * `npm install`
 * Update `src/config.js` with your settings but leave `trailsDocumentID` unchanged. You will have to create an empty document, get the generated ID and replace it in the config file
 * To do so, paste the following code in `src/index.js` to create an empty document
-`yaas.document.create(config.applicationId, config.trailsDocumentType, {})
+```javascript
+yaas.document.create(config.applicationId, config.trailsDocumentType, {})
  .then(
      (response) => {
          console.log('create', response);
@@ -23,13 +24,15 @@ The idea behind this service is to create a mobile application for Montrealers w
      (err) => {
          console.log(`Error creating document ${config.trailsDocumentID}: ${err}`);
      }
- );`
+ );
+```
 * Run `npm start` to start the application, and copy the document ID from the console output in `src/config.js`
 * Remove this piece of code, save the file and you will be able to make API calls at `http://localhost:8080/api/trailsCondition`
 
 ## JSON structure
 Here is an example of the returned payload
-`{
+```json
+{
   "statusCode": 200,
   "body": {
     "Pistes_ski": {
@@ -187,7 +190,8 @@ Here is an example of the returned payload
     "id": "57dd77a9101dcc001d1cea16"
   },
   "headers": {}
-}`
+}
+```
 
 ## TO DO
 * Setup a CRON job to update the trails conditions on a daily basis
