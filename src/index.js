@@ -2,63 +2,69 @@ import YaaS from 'yaas.js';
 import express from 'express';
 import bodyParser from 'body-parser';
 
-let yaas = new YaaS();
-let app = express();
+import config from './config';
+import OpenDataService from './services/OpenDataService';
 
+// Initialize the YaaS NodeJS client with the provided configuration
+const { clientId, clientSecret, scopes, projectId } = config;
+const yaas = new YaaS();
+yaas.init(clientId, clientSecret, scopes, projectId);
+
+// Initialize and configure Express
+const app = express();
+const port = process.env.PORT || 8080;
+const router = express.Router();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-const port = 8080;
+// Initialize the Open Data Service
+const openDataService = new OpenDataService();
 
-const clientId = 'TjAEGvp4Tmg98Kt525BNLcnNcf0PXlsl';
-const clientSecret = '8926X9QhxPjNCW4c';
-const scopes = 'hybris.document_view hybris.document_manage hybris.search_view';
-const projectId = 'wintertrails';
+// Retrieve the trails conditions
+openDataService.fetch(config.trailsConditionsPath)
+    .then(data => {
+        const payload = openDataService.toJSON(data);
+        if(payload.hasOwnProperty(config.trailsJSONRootKey)){
+            // Update the trails condition document
+            yaas.document.update(config.applicationId, config.trailsDocumentType, config.trailsDocumentID, payload)
+            .then(
+                (response) => {
+                    console.log(response);
+                },
+                (err) => {
+                    console.log(`Error updating document ${config.trailsDocumentID}: ${err}`);
+                }
+            );
+        }
+    });
 
-let router = express.Router();
 
-yaas.init(
-  clientId,
-  clientSecret,
-  scopes,
-  projectId
-)
-.then(function(response) {
-    console.log('INIT OK');
-}, function(reason) {
-    console.log('INIT FAILED')
+// Add API Endpoints
+router.get(config.trailsConditionEndpoint, function(req, res) {
+    // Retrieve the trails condition document
+    yaas.document.get(config.applicationId, config.trailsDocumentType, config.trailsDocumentID).then(
+        (response) => {
+          res.json(response);
+        },
+        (err) => {
+            console.log(`Error getting document ${config.trailsDocumentID}: ${err}`);
+        }
+    );
 });
 
+// Register API endpoints
+app.use('/api', router);
 
-const trail = {
-  "name": "Mont Royal",
-  "condition": "Good"
-};
 
-yaas.document.create('wintertrails.nodejsclient', 'trail', trail)
+yaas.document.create(config.applicationId, config.trailsDocumentType, {})
 .then(
-    function(response){
-        console.log(response);
+    (response) => {
+        console.log('create', response);
     },
-    function(err){
-        console.error('Error: ', err);
+    (err) => {
+        console.log(`Error updating document ${config.trailsDocumentID}: ${err}`);
     }
 );
 
-router.get('/trails', function(req, res) {
-
-console.log('in trails');
-    yaas.document.get('wintertrails.nodejsclient', 'trail', '57dc1472aadac4001d904132').then(
-        function(response){
-          res.json(response);
-        },
-        function(err){
-            console.error('Error: ', err);
-        }
-    );
-
-});
-
-app.use('/api', router);
+// Start the server
 app.listen(port);
-console.log('Magic happens on port ' + port);
