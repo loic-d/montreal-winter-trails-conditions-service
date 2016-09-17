@@ -55,16 +55,5 @@ router.get(config.trailsConditionEndpoint, function(req, res) {
 // Register API endpoints
 app.use('/api', router);
 
-
-yaas.document.create(config.applicationId, config.trailsDocumentType, {})
-.then(
-    (response) => {
-        console.log('create', response);
-    },
-    (err) => {
-        console.log(`Error updating document ${config.trailsDocumentID}: ${err}`);
-    }
-);
-
 // Start the server
 app.listen(port);
