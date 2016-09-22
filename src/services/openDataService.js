@@ -28,6 +28,17 @@ class OpenDataService {
         });
     }
 
+    isPayloadValid(payload, JSONRootKey, JSONArrayKey) {
+        if (payload.hasOwnProperty(JSONRootKey)
+            && payload[JSONRootKey][JSONArrayKey]
+            && payload[JSONRootKey][JSONArrayKey].length > 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     toJSON(XMLString) {
         // Define parsing options
         const options = {

@@ -1,6 +1,7 @@
 import YaaS from 'yaas.js';
 import express from 'express';
 import bodyParser from 'body-parser';
+import schedule from 'node-schedule';
 
 import config from './config';
 import OpenDataService from './services/OpenDataService';
@@ -20,24 +21,35 @@ app.use(bodyParser.json());
 // Initialize the Open Data Service
 const openDataService = new OpenDataService();
 
-// Retrieve the trails conditions
-openDataService.fetch(config.trailsConditionsPath)
-    .then(data => {
-        const payload = openDataService.toJSON(data);
-        if(payload.hasOwnProperty(config.trailsJSONRootKey)){
-            // Update the trails condition document
-            yaas.document.update(config.applicationId, config.trailsDocumentType, config.trailsDocumentID, payload)
-            .then(
-                (response) => {
-                    console.log(response);
-                },
-                (err) => {
-                    console.log(`Error updating document ${config.trailsDocumentID}: ${err}`);
-                }
-            );
-        }
-    });
+function retrieveTrailsConditions() {
+    // Retrieve the trails conditions
+    openDataService.fetch(config.trailsConditionsPath)
+        .then(data => {
+            const payload = openDataService.toJSON(data);
+            if(openDataService.isPayloadValid(payload, config.trailsJSONRootKey, config.trailsJSONArrayKey)){
+                // Update the trails condition document
+                yaas.document.update(config.applicationId, config.trailsDocumentType, config.trailsDocumentID, payload)
+                .then(
+                    (response) => {
+                        console.log(response);
+                    },
+                    (err) => {
+                        console.log(`Error updating document ${config.trailsDocumentID}: ${err}`);
+                    }
+                );
+            }
+        });
+}
 
+// Initialize the schedule task
+// The job will be executed every 59 minutes
+const rule = '*/59 * * * *';
+schedule.scheduleJob(rule, () => {
+    retrieveTrailsConditions();
+});
+
+// Initial fetch
+retrieveTrailsConditions();
 
 // Add API Endpoints
 router.get(config.trailsConditionEndpoint, function(req, res) {

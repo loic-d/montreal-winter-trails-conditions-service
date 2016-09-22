@@ -22,6 +22,7 @@
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
+    "node-schedule": "^1.1.1",
     "xml2json": "^0.10.0",
     "yaas.js": "^0.1.8"
   },
