@@ -1,8 +1,8 @@
 // Application configuration
 const config = {
     // YaaS
-    clientId: 'TjAEGvp4Tmg98Kt525BNLcnNcf0PXlsl',
-    clientSecret: '8926X9QhxPjNCW4c',
+    clientId: 'YOUR_CLIENT_ID',
+    clientSecret: 'YOUR_CLIENT_SECRET',
     scopes: 'hybris.document_view hybris.document_manage hybris.search_view',
     projectId: 'wintertrails',
     applicationId: 'wintertrails.nodejsclient',
@@ -15,7 +15,8 @@ const config = {
     trailsDocumentID: '57dd77a9101dcc001d1cea16',
 
     // API Endpoint
-    trailsConditionEndpoint: '/trailsCondition'
+    trailsConditionEndpoint: '/trailsCondition',
+    trailItemConditionEndpoint: '/trailsCondition/:trailID'
 };
 
 export default config
