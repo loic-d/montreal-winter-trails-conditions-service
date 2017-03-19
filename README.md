@@ -1,10 +1,7 @@
 # Montreal Open Data winter trails conditions service wrapper
 
-![alt text](https://cloud.githubusercontent.com/assets/3925905/18610203/e73a9f8c-7ce3-11e6-8d06-656f1ea50b9c.jpg "Montreal Open Data")
-
 This simple NodeJS application provides a REST API to retrieve the current Montreal winter trails conditions in JSON. The data is extracted from the [city's Open Data XML file](http://donnees.ville.montreal.qc.ca/dataset/conditions-ski/resource/41721587-bfc4-4ea5-a8d9-2a7584d9979e).
 [YaaS (Hybris as a Service)](https://www.yaas.io/) is used to provide a simple persistence layer to store the current trails conditions.
-The idea behind this service is to create a mobile application for Montrealers who want updates on the trails conditions (work in progress).
 
 ## Installation
 * Create a [YaaS account](https://www.yaas.io/register/) if you don't have one
@@ -14,15 +11,15 @@ The idea behind this service is to create a mobile application for Montrealers w
 * `cd montreal-winter-trails-conditions-service`
 * `npm install`
 * Update `src/config.js` with your settings but leave `trailsDocumentID` unchanged. You will have to create an empty document, get the generated ID and replace it in the config file
-* To do so, paste the following code in `src/index.js` to create an empty document
+* To do so, paste the following code in `src/index.js` and run the script to create an empty document. You can also use Postman or CURL.
 ```javascript
 yaas.document.create(config.applicationId, config.trailsDocumentType, {})
  .then(
      (response) => {
-         console.log('create', response);
+         console.log('Document created', response);
      },
-     (err) => {
-         console.log(`Error creating document ${config.trailsDocumentID}: ${err}`);
+     (error) => {
+         console.log(`Error creating document ${config.trailsDocumentID}`, error);
      }
  );
 ```
@@ -194,6 +191,6 @@ Here is an example of the returned payload
 ```
 
 ## TO DO
-* Setup a CRON job to update the trails conditions on a daily basis
-* Write better unit tests
-* Improve payload structure
+* Add unit tests
+* Improve returned payload structure
+* Code cleaning and refactoring
